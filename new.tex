@@ -1,0 +1,278 @@
+\documentclass[12pt,reqno]{amsart}
+\usepackage[text={160mm,240mm},centering]{geometry}
+
+\usepackage{graphicx, enumitem}
+\usepackage{url}
+\usepackage{verbatim}
+\usepackage{bbm}
+\usepackage{amssymb,amsmath}
+\usepackage{amsfonts,savesym,graphicx,bm,amsthm}
+\usepackage{color}
+\usepackage[mathscr]{eucal}
+\usepackage[all]{xy}
+
+
+\definecolor{hot}{RGB}{65,105,225}
+\usepackage{hyperref}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=hot,
+    citecolor=hot,
+    urlcolor=hot
+}
+
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{subs}[theorem]{ }
+
+
+\numberwithin{equation}{section}
+
+
+\author{Xinyi Ye}
+\address{Hailiang Astra College}
+\email{3335351971@qq.com}
+
+
+\linespread{1.1}
+
+
+%=========================================================
+
+
+\title{Systematic risk analysis of financial networks based on homology theory}
+
+\begin{document}
+	
+	
+	\begin{abstract}
+        \textbf{Keywords:} Financial Networks, Systemic Risk, Persistent Homology, Debt Cycles, Algebraic Topology
+        \vspace{0.5cm}
+        
+		Modern financial systems are characterized by complex debt networks where systemic risk often emerges from circular interdependencies rather than individual failures. Traditional node-based metrics, however, often struggle to capture these global topological structures. This paper systematically reviews the theory of simplicial homology and demonstrates its construction from financial data using Clique and Vietoris-Rips complexes. The author specifically focuses on the detection of debt vortices—represented mathematically as persistent 1-cycles—which indicate fragile feedback loops within the economy. Additionally, an extrinsic norm based on debt magnitude is introduced to quantify the economic significance of these topological risks, distinguishing systemic threats from market noise. The author concludes that topological invariants, particularly persistent Betti numbers, serve as superior indicators for structural vulnerability compared to standard geometric metrics. Future research will focus on empirically validating these indicators against historical crisis data, moving towards a shape-based Monetary Macro Theory that better anticipates systemic collapses.
+	\end{abstract}
+	
+	\maketitle
+	
+	
+	\section{Introduction}\label{intro}
+
+    The debt network is the core of the modern financial system where companies, banks, and countries lend to each other to form a huge and complex web. The breach of a contract in a single node could be conducted throughout the network and cause systemic financial risks or even a global financial crisis. Ismail et al. (2022) \cite{INIR22} highlighted the severity of such contagion events in the context of the 2008 crisis. Therefore, it is crucial to understand the internal structure and recognize the early signals of network vulnerability before a collapse occurs.
+
+    Another motivation for studying the debt network comes from the hope of understanding money itself. In the traditional theory of currency, money is seen merely as a medium of exchange, which makes it difficult to explain the time differences and debt issues inherent in production. In the modern economy, the functions of currency and the stability of the accounting system are essential. Recently, Men\'{e}ndez and Winschel (2025) \cite{MW25a} introduced a new model called the Monetary Macro Theory which indicates that debts are the foundation of money. Men\'{e}ndez and Winschel (2025) \cite{MW25b} further fulfilled this model by applying mathematical tools including category theory. From this aspect, it is of great importance to develop tools to reflect the status of the current network and monitor its changes as these capture the essential behavior of money during circulation.
+    
+    Traditional methods like observing the proceedings of the debt networks and analyzing the resulting numerical data usually lack timeliness and turn out to be coarse. To resolve these shortcomings, more advanced mathematics should be involved. It is natural to understand the debt network as a graph or a dynamically changing simplicial complex. Each vertex refers to an individual or a company while an edge refers to a debt. The key observed object is the vortex which performs geometrically like a loop or a cycle in homological terms. Some vortices can be addressed easily by loans from the central bank or striking deals themselves, while others are rather stubborn. It is the priority to detect the stubborn vortices in this graph, and this feature fits the homology theory in algebraic topology described by Hatcher (2002) \cite{Hat02} and Edelsbrunner and Harer (2010) \cite{EH10}. 
+
+    Roughly speaking, homology theory is a mathematical method to count the number of holes in a complex shape and distinguish their dimensions. The shape is divided into standard pieces such as points, line segments, and triangles. By studying the relationships between these pieces regarding the boundary, a hole performs as a loop without a boundary. In the debt network, these holes correspond to the structure of risks. In recent years, homology theory has demonstrated its strong capability to extract shape characteristics from data in various fields. For instance, Yen et al. (2021) \cite{YXC21} applied these methods to analyze financial market correlations. Similarly, Ismail et al. (2022) \cite{INIRA22} highlighted the effectiveness of persistent homology in detecting early warning signals of financial crises. In the field of engineering, Gowdridge et al. (2022) \cite{GDW22} utilized topological data analysis for structural health monitoring. Furthermore, Aktas et al. (2019) \cite{AAF19} established the credibility and feasibility of this tool in general network analysis.
+    
+    The structure of this paper is designed to bridge the gap between abstract mathematics and financial reality. Section \ref{homology} introduces the foundational mathematical definitions of simplicial complexes and homology groups, establishing the theoretical framework. Section \ref{sec:data_to_top} details the methodology for constructing these complexes from raw financial data, specifically distinguishing between binary (Clique) and weighted (Vietoris-Rips) network approaches. Section \ref{sec:application} discusses the practical application of these topological tools to analyze debt networks and interpret Betti numbers as risk indicators. Finally, the conclusion summarizes the findings and future outlook.
+
+    \section{Simplicial complex and its homology}\label{homology}
+
+    To analyze the topological features in a debt network, we must first translate financial agents and their relationships into a mathematical space. The author applies the framework of simplicial homology for this purpose. This section defines the basic building blocks—simplices—and explains how their assembly reveals the "holes" or risk cycles in the system, based on the work of Hatcher (2002) \cite{Hat02}.
+    
+    \subsection{Simplices and boundaries}\label{sec:simplices}
+    The fundamental unit of our analysis is the $n$-simplex. In finance, a 0-simplex is a bank, a 1-simplex is a loan between two banks, and higher-dimensional simplices represent multi-party agreements.
+
+    \begin{definition}[$n$-simplex]
+    An $n$-simplex is the smallest convex set containing $n+1$ points $\{v_0,\cdots,v_n\}$ in general position, written as $[v_0,v_1,\cdots,v_n]$. The standard $n$-simplex is defined as:
+    \begin{equation}
+        \Delta^n=\{(t_0,\cdots,t_n)\in\mathbb{R}^{n+1} \mid \sum t_i=1,t_i\ge0\}
+    \end{equation}
+    Every $n$-simplex is homeomorphic to $\Delta^n$ via the linear map $(t_0,\cdots,t_n)\mapsto\sum t_iv_i$.
+    \end{definition}
+
+    To detect cycles, we need to understand how these blocks connect. This is captured by the boundary operator.
+
+    \begin{definition}[Face and boundary]
+        For an $n$-simplex $[v_0, v_1, \dots, v_n]$, the $(n-1)$-simplex $[v_0, \dots, \hat{v}_j, \dots, v_n]$ (where $v_j$ is omitted) is called a face. The union of all faces is called the boundary, denoted as $\partial [v_0, \dots, v_n]$. The interior is defined as $\mathring{\Delta}^n := \Delta^n - \partial \Delta^n$.
+    \end{definition}
+
+    In the context of debt networks, a topological space $X$ is constructed to represent the total structure of financial interdependencies. This is formally described using $\Delta$-complexes.
+
+    \begin{definition}[$\Delta$-complex structure]
+    A $\Delta$-complex structure on a topological space $X$ is a collection of maps $\sigma_\alpha: \Delta^n \to X$ such that:
+    \begin{enumerate}
+        \item Each restriction $\sigma_\alpha|_{\mathring{\Delta}^n}$ is injective, and each point of $X$ is contained in exactly one image $\sigma_\alpha(\mathring{\Delta}^n)$.
+        \item The restriction of $\sigma_\alpha$ to any face of $\Delta^n$ is also a map in the collection (i.e., it is some $\sigma_\beta:\Delta^{n-1}\to X$).
+        \item A set $A\subset X$ is open if and only if (iff) $\sigma_\alpha^{-1}(A)$ is open in $\Delta^n$ for all $\sigma_\alpha$.
+    \end{enumerate}
+    \end{definition}
+
+    
+    \subsection{Simplicial Complex and Simplicial Homology}
+
+    While $\Delta$-complexes offer theoretical flexibility, computational topology in finance relies on the \textit{simplicial complex}. This structure allows us to formalize the global architecture of financial exposures as a collection of multi-party relations that can be processed by algorithms.
+    
+    \begin{definition}[Abstract Simplicial Complex]
+    An abstract simplicial complex $K$ on a finite set of vertices $V = \{v_0, v_1, \dots, v_n\}$ (representing financial institutions) is a collection of non-empty subsets of $V$, called simplices, such that:
+    \begin{enumerate}
+       \item For every $v \in V$, $\{v\} \in K$.
+       \item If $\sigma \in K$ and $\tau \subseteq \sigma$, then $\tau \in K$ (the downward closure property).
+    \end{enumerate}
+    A simplex $\sigma \in K$ of cardinality $k+1$ is called a $k$-simplex, corresponding to the geometric $[v_0, \dots, v_k]$ defined in the previous section.
+    \end{definition}
+
+    With the structure defined, we can now define the "holes" or voids in the network. These voids correspond to cycles of debt that lack internal stabilization mechanisms (like a central clearing party).
+
+    \begin{definition}[Simplicial Homology]
+    To compute the homology of $K$, the author fixes an orientation for the simplices and constructs the simplicial chain complex:
+    \begin{enumerate}
+       \item Chain Group: The $n$-th simplicial chain group $C_n(K)$ is the free abelian group generated by the $n$-simplices of $K$. An $n$-chain is a formal sum $c = \sum a_i \sigma_i$ with $a_i \in \mathbb{Z}$.
+       \item \textbf{Boundary Operator:} The boundary operator $\partial_n: C_n(K) \to C_{n-1}(K)$ is defined linearly on a basis simplex $\sigma = [v_0, \dots, v_n]$ as:
+        \begin{equation}
+             \partial_n \sigma = \sum_{i=0}^{n} (-1)^i [v_0, \dots, \hat{v}_i, \dots, v_n]
+        \end{equation}
+        consistent with the face-omitting notation. More precisely, $[v_0, \dots, \hat{v}_i, \dots, v_n]$ denotes compositions $\Delta^{n-1} \overset{\alpha}{\longrightarrow} \Delta^n \overset{\sigma}{\longrightarrow} K$.
+    \item \textbf{Homology Group:} It can be checked that $\partial_{n} \circ \partial_{n+1} = 0$, and hence $\mathrm{im}( \partial_{n+1}) \subset \ker( \partial_n)$. One defines the $n$-th simplicial homology group as the quotient:
+        \begin{equation}
+             H_n(K) = \ker(\partial_n) / \text{im}(\partial_{n+1})
+        \end{equation}
+    \end{enumerate}
+    \end{definition}
+
+    In a debt network context, the elements of $\ker(\partial_1)$ are closed loops of credit flow. If such a loop is not in $\text{im}(\partial_2)$, it represents a ``hollow'' cycle in $H_1(K)$, indicating a lack of the capacity of spreading risks within that specific financial loop.
+
+   \subsection{An Illustrative Example: The Torus} 
+   Before moving to data, the torus serves as a fundamental theoretical example. It demonstrates how local connectivity rules give rise to global, interlocking features analogous to coupled financial markets.
+   
+   \subsubsection{Construction via Identification}
+   Geometrically, the author views the torus as a quotient space derived from a square $I^2$. By identifying opposite edges—gluing top to bottom and left to right—the author creates a closed surface. To formalize this as a $\Delta$-complex suitable for homology, the author dissects the square into two 2-simplices, $U$ and $L$, sharing a common diagonal. This triangulation collapses all four corners of the square into a single vertex $v$, leaving us with three distinct edges. The resulting homology groups $H_1 \cong \mathbb{Z} \oplus \mathbb{Z}$ and $H_2 \cong \mathbb{Z}$ reveal a structure far richer than a simple cycle.
+
+   \subsubsection{Financial Interpretation}
+   In the context of systemic risk, the homology of the torus suggests a specific kind of market fragility. The first significant aspect is the presence of Orthogonal Risk Cycles as indicated by $H_1$. The existence of two independent generators implies that the system sustains two distinct classes of cyclic debt that are topologically orthogonal yet physically coupled on the same surface. For instance, cycle $a$ might represent domestic interbank lending while cycle $b$ captures international currency swaps.
+   
+   The second aspect involves Trapped Liquidity as suggested by the non-trivial second homology group $H_2$. This indicates a bounded volume which economically represents a closed ecosystem of capital. In such a scenario, liquidity circulates internally without leaking to external sinks. While efficient, such closed systems often lack the dampening effect of external connections during a crisis.
+
+   \section{From Data to Topology: Constructing the Complex}\label{sec:data_to_top}
+
+   The mathematical theory provided in Section 2 defines how to find holes in a given shape. However, financial data does not come as a shape but as a ledger or a graph $G$. This section explains the methodology for lifting raw financial data into a simplicial complex, which serves as the input for homology calculations. The author generally employs two distinct strategies depending on whether the debt data is treated as binary or weighted.
+
+   \subsection{The Clique Complex: Capturing Structural Cohesion}
+   When the analyst focuses solely on the existence of a debt relationship and ignores the amount, the Clique Complex is the appropriate tool. This method transforms the structural cohesion of the graph into topological features.
+
+   \begin{definition}[Clique Complex Construction]
+   Given a graph $G$, the Clique Complex $Cl(G)$ is formed by promoting every $k$-clique in the graph to a $k$-simplex. 
+   \end{definition}
+
+   This construction offers a compelling financial interpretation of stability. If three banks form a triangle (a 2-simplex) where each lends to the others, it implies high information transparency and the potential for netting out debts locally. In contrast, an empty cycle in the complex represents a chain of obligations lacking cross-guarantees. These topological holes are often viewed as indicators of systemic fragility as the default of one node cannot be absorbed by its neighbors.
+
+   \subsection{The Vietoris-Rips Complex: Incorporating Debt Magnitude}\label{VR_complex}
+   The limitation of the Clique Complex is its blindness to scale since a small debt looks the same as a massive one. To capture the nuance of exposure size, the author turns to the Vietoris-Rips (VR) filtration. This method requires us to think of the debt network as a metric space where distance is inversely proportional to debt size.
+
+   \begin{definition}[VR Filtration]
+   For a varying threshold parameter $\epsilon$, the complex $VR(G, \epsilon)$ includes a simplex $\sigma$ only if all pairwise distances between vertices in $\sigma$ fall below $\epsilon$.
+   \end{definition}
+
+   As the author sweeps $\epsilon$ from zero to infinity, the birth and death of topological features are observed. This dynamic view is essential for debt analysis because it separates robust features from noise. A debt cycle that persists over a long range of $\epsilon$ values represents a deep-seated structural vulnerability whereas short-lived features may be disregarded as transient market fluctuations.
+
+   \subsection{An extrinsic norm: Measuring the Size of Risk}\label{sec:extrinsic} 
+   Homology groups give us a binary answer regarding whether a hole exists. However, in finance, magnitude matters. A small debt loop is topologically identical to a large loop but their systemic implications are vastly different. To bridge this gap, the author reintroduces geometry into the algebraic structure through an extrinsic norm.
+
+   A homology class $[\alpha] \in H_1(K)$ is not a single cycle but an equivalence class of cycles. Among all these possible paths that surround the same hole, the author seeks the one that is economically significant.
+
+   \begin{definition}[Optimal Cycle Representative]
+   Let $w(e)$ be a weight function on the edges. The length of a cycle $c = \sum e_i$ is the sum of its weights. The \textbf{optimal representative} for a homology class $[\alpha]$ is the cycle $c_{opt} \in [\alpha]$ that minimizes this length:
+   \begin{equation}
+       \text{Size}([\alpha]) = \min_{c \in [\alpha]} \sum_{e \in c} w(e)
+   \end{equation}
+   \end{definition}
+
+   In a debt network, finding the cycle with the minimal sum of inverse-debts corresponds to identifying the path of maximum liquidity flow. This specific cycle represents the path of least resistance for financial contagion and allows us to point to a specific chain of banks as the backbone of the systemic risk vortex.
+
+   \section{Application to Debt Net}\label{sec:application}
+
+   With the complex constructed and the measuring tools defined, the final step is to interpret these topological features in the context of economic policy and risk management. Following the logic of Schauf et al. (2016) \cite{SCHS16}, the author shifts the focus from individual bank statistics to the global shape of the economy.
+
+   \subsection{Interpreting Betti Numbers in Finance}
+   The Betti numbers $\beta_n$, which measure the rank of the homology groups $H_n$, serve as primary topological indicators for the health of the debt network. 
+
+   The zeroth Betti number $\beta_0$ counts the number of separate clusters in the economy. In normal times, markets might be fragmented. However, during a liquidity crisis, banks frantically borrow from anyone available which effectively glues the network together. A rapid drop in $\beta_0$ serves as an early warning signal of over-integration where contagion can spread instantly across the entire system.
+    
+   The first Betti number $\beta_1$ is of key interest as it indicates a network riddled with circular dependencies that are not stabilized by internal cross-guarantees. In terms of money flow, a generator of $H_1$ represents a feedback loop. If Bank A is distressed, it pressures B, which pressures C, and eventually pressures A again. This amplification mechanism makes the system inherently fragile.
+
+   \subsection{Signal vs. Noise: Reading the Barcode}
+   By applying the Vietoris-Rips filtration discussed in Section \ref{sec:data_to_top}, the author generates a persistence barcode. This allows the analyst to distinguish between transient market noise and structural systemic risks.
+
+   Short bars in the barcode typically represent incidental debt relations or temporary arbitrage opportunities. They are topologically trivial and likely pose little systemic threat. Conversely, long bars in the persistence interval correspond to stubborn vortices. These represent debt cycles that persist across a wide range of scales. Such features imply a deep-seated structural characteristic of the economy where a loop of obligations is robust and difficult to break.
+
+   Crucially, topological features can discriminate between economic systems that look identical under standard geometric metrics like GDP or total debt. Two economies might have the same total leverage but the one with high persistent $\beta_1$ is far more susceptible to cascading defaults.
+
+   \subsection{Policy Implications: Breaking the Cycle}
+   Understanding the topology of debt gives regulators a new way to intervene. Traditional intervention often focuses on injecting liquidity into large nodes. However, the homological perspective suggests targeting the topology.
+
+   Regulators could focus on Targeted Cycle Breaking by severing a specific edge in a persistent 1-cycle. Alternatively, they could encourage triadic closure by incentivizing the formation of cross-links to turn a dangerous empty loop into a stable filled region.
+
+   \section{Conclusion}
+   This paper has reviewed the foundational theory of simplicial homology and proposed its application to modern debt networks. By modeling financial institutions as vertices and debts as simplices, the author transforms the obscure web of liabilities into a computable topological space.
+
+   The central insight is that systemic risk has a shape. The vortex of debt provides a robust indicator of circular fragility that traditional node-based metrics overlook. Future work will focus on applying these extrinsic norms to historical data to test whether topological signals effectively predict past crises. 
+   
+   However, several challenges remain in this field. One significant hurdle is the computational complexity associated with calculating persistent homology for large-scale networks, especially when processing high-frequency financial data. Additionally, obtaining the granular bilateral exposure data required to construct accurate simplicial complexes is often difficult due to privacy regulations. Despite these obstacles, integrating algebraic topology into economics moves us closer to a Monetary Macro Theory that respects the complex and entangled reality of money.
+
+
+	\begin{thebibliography}{10}
+    
+        \bibitem{INIR22}
+        M.S. Ismail, M.S. Md Noorani, M. Ismail, and F.A. Razak.
+        \newblock Early Warning Signals of Financial Crises Using Persistent Homology and Critical Slowing Down: Evidence From Different Correlation Tests.
+        \newblock {\em Front. Appl. Math. Stat.}, 8: 30, 2022.
+
+        \bibitem{MW25a}
+        R. Men\'{e}ndez and V. Winschel.
+        \newblock Monetary Macro Accounting Theory.
+        \newblock {\em \url{https://arxiv.org/abs/2506.21651}}, 2025
+
+        \bibitem{MW25b}
+        R. Men\'{e}ndez and V. Winschel.
+        \newblock Macro economic Foundation of Monetary Accounting by Diagrams of Categorical Universals.
+        \newblock {\em \url{https://arxiv.org/abs/2508.14132}}, 2025
+
+        \bibitem{Hat02}
+        A. Hatcher.
+        \newblock Algebraic topology.
+        \newblock {\em Cambridge University Press}, Cambridge, 2002.
+        
+        \bibitem{EH10}
+        H. Edelsbrunner and J. Harer. 
+        \newblock Computational Topology: an Introduction.
+        \newblock {\em American Mathematical Soc.}, 2010.
+
+        \bibitem{YXC21}
+        P. Yen, K. Xia, and S.A. Cheong.
+        \newblock Understanding Changes in the Topology and Geometry of Financial Market Correlations during a Market Crash.
+        \newblock {\em Entropy}, 23(9): 1211, 2021.
+
+        \bibitem{INIRA22}
+        M.S. Ismail, M.S. Md Noorani, M. Ismail, F.A. Razak, and M.A. Alias.
+        \newblock Early warning signals of financial crises using persistent homology.
+        \newblock {\em Phys. A: Stat. Mech. Appl.}, 586, 126459, 2022.
+
+        \bibitem{GDW22}
+        T. Gowdridge, N. Dervilis, and K. Worden.
+        \newblock On Topological Data Analysis for Structural Dynamics: An Introduction to Persistent Homology.
+        \newblock {\em ASME Open J. Engineering}, 1: 011038, 2022.
+
+        \bibitem{SCHS16}
+        A. Schauf, J.B. Cho, M. Haraguchi, and J.J. Scott. 
+        \newblock Discrimination of Economic Input-Output Networks Using Persistent Homology.
+        \newblock {\em The Santa Fe Institute CSSS Working Paper}, Santa Fe, 2016.
+
+        \bibitem{AAF19}
+        M.E. Aktas, E. Akbas, and A.E. Fatmaoui.
+        \newblock Persistence homology of networks: methods and applications. 
+        \newblock {\em Appl. Netw. Sci.} 4: 61, 2019. 
+
+	\end{thebibliography}
+	
+\end{document}
